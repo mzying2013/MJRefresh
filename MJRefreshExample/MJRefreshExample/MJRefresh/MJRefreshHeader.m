@@ -25,6 +25,21 @@
 @end
 
 @implementation MJRefreshHeader
+
++ (instancetype)headerWithRefreshingBlock:(void (^)())block
+{
+    return [self headerWithRefreshingBlock:block dateKey:nil];
+}
+
++ (instancetype)headerWithRefreshingBlock:(void (^)())block dateKey:(NSString *)dateKey
+{
+    MJRefreshHeader *header = [[self alloc] init];
+    header.refreshingBlock = block;
+    header.dateKey = dateKey;
+    
+    return header;
+}
+
 #pragma mark - 懒加载
 - (NSMutableDictionary *)stateTitles
 {
@@ -69,17 +84,10 @@
         [self setTitle:MJRefreshHeaderStateIdleText forState:MJRefreshHeaderStateIdle];
         [self setTitle:MJRefreshHeaderStatePullingText forState:MJRefreshHeaderStatePulling];
         [self setTitle:MJRefreshHeaderStateRefreshingText forState:MJRefreshHeaderStateRefreshing];
+        
+        self.mj_h = MJRefreshHeaderHeight; // Default
     }
     return self;
-}
-
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{
-    [super willMoveToSuperview:newSuperview];
-    
-    if (newSuperview) {
-        self.mj_h = MJRefreshHeaderHeight;
-    }
 }
 
 - (void)layoutSubviews

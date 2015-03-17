@@ -26,28 +26,67 @@ static const CGFloat MJDuration = 2.0;
 
 @implementation MJTableViewController
 #pragma mark - 示例代码
+- (MJRefreshLegendHeader *)legendHeader
+{
+    __weak typeof(self) weakSelf = self;
+    
+    // 设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
+    MJRefreshLegendHeader *header = [MJRefreshLegendHeader headerWithRefreshingBlock:^{
+        [weakSelf loadNewData];
+    }];
+    
+    return header;
+}
+
 /**
  * UITableView + 下拉刷新 传统
  */
 - (void)example01
 {
-    __weak typeof(self) weakSelf = self;
-    
     // 添加传统的下拉刷新
-    // 设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
-    [self.tableView addLegendHeaderWithRefreshingBlock:^{
-        [weakSelf loadNewData];
-    }];
+    self.tableView.header = [self legendHeader];
     
     // 马上进入刷新状态
-    [self.tableView.legendHeader beginRefreshing];
+    [self.tableView.header beginRefreshing];
     
     /**
      也可以这样使用
-     [self.tableView.header beginRefreshing];
+     [self.tableView.legendHeader beginRefreshing];
      
      此时self.tableView.header == self.tableView.legendHeader
      */
+}
+
+- (MJRefreshGifHeader *)gifHeader1
+{
+    __weak typeof(self) weakSelf = self;
+    
+    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
+    MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingBlock:^{
+        [weakSelf loadNewData];
+    }];
+    
+    // 设置普通状态的动画图片
+    NSMutableArray *idleImages = [NSMutableArray array];
+    for (NSUInteger i = 1; i<=60; i++) {
+        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_anim__000%zd", i]];
+        [idleImages addObject:image];
+    }
+    [header setImages:idleImages forState:MJRefreshHeaderStateIdle];
+    
+    // 设置即将刷新状态的动画图片（一松开就会刷新的状态）
+    NSMutableArray *refreshingImages = [NSMutableArray array];
+    for (NSUInteger i = 1; i<=3; i++) {
+        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_loading_0%zd", i]];
+        [refreshingImages addObject:image];
+    }
+    [header setImages:refreshingImages forState:MJRefreshHeaderStatePulling];
+    
+    // 设置正在刷新状态的动画图片
+    [header setImages:refreshingImages forState:MJRefreshHeaderStateRefreshing];
+    // 在这个例子中，即将刷新 和 正在刷新 用的是一样的动画图片
+    
+    return header;
 }
 
 /**
@@ -56,31 +95,10 @@ static const CGFloat MJDuration = 2.0;
 - (void)example02
 {
     // 添加动画图片的下拉刷新
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
-    [self.tableView addGifHeaderWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
-    
-    // 设置普通状态的动画图片
-    NSMutableArray *idleImages = [NSMutableArray array];
-    for (NSUInteger i = 1; i<=60; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_anim__000%zd", i]];
-        [idleImages addObject:image];
-    }
-    [self.tableView.gifHeader setImages:idleImages forState:MJRefreshHeaderStateIdle];
-    
-    // 设置即将刷新状态的动画图片（一松开就会刷新的状态）
-    NSMutableArray *refreshingImages = [NSMutableArray array];
-    for (NSUInteger i = 1; i<=3; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_loading_0%zd", i]];
-        [refreshingImages addObject:image];
-    }
-    [self.tableView.gifHeader setImages:refreshingImages forState:MJRefreshHeaderStatePulling];
-    
-    // 设置正在刷新状态的动画图片
-    [self.tableView.gifHeader setImages:refreshingImages forState:MJRefreshHeaderStateRefreshing];
-    // 在这个例子中，即将刷新 和 正在刷新 用的是一样的动画图片
+    self.tableView.header = [self gifHeader1];
     
     // 马上进入刷新状态
-    [self.tableView.gifHeader beginRefreshing];
+    [self.tableView.header beginRefreshing];
     
     // 此时self.tableView.header == self.tableView.gifHeader
 }
@@ -91,8 +109,7 @@ static const CGFloat MJDuration = 2.0;
 - (void)example03
 {
     // 添加传统的下拉刷新
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
-    [self.tableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+    self.tableView.header = [self legendHeader];
     
     // 隐藏时间
     self.tableView.header.updatedTimeHidden = YES;
@@ -103,20 +120,14 @@ static const CGFloat MJDuration = 2.0;
     // 此时self.tableView.header == self.tableView.legendHeader
 }
 
-/**
- * UITableView + 下拉刷新 隐藏状态和时间01
- */
-- (void)example04
+- (MJRefreshGifHeader *)gifHeader2
 {
-    // 添加动画图片的下拉刷新
+    __weak typeof(self) weakSelf = self;
+    
     // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
-    [self.tableView addGifHeaderWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
-    
-    // 隐藏时间
-    self.tableView.header.updatedTimeHidden = YES;
-    
-    // 隐藏状态
-    self.tableView.header.stateHidden = YES;
+    MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingBlock:^{
+        [weakSelf loadNewData];
+    }];
     
     // 设置普通状态的动画图片
     NSMutableArray *idleImages = [NSMutableArray array];
@@ -124,7 +135,7 @@ static const CGFloat MJDuration = 2.0;
         UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"PullToRefresh_%03zd", i]];
         [idleImages addObject:image];
     }
-    [self.tableView.gifHeader setImages:idleImages forState:MJRefreshHeaderStateIdle];
+    [header setImages:idleImages forState:MJRefreshHeaderStateIdle];
     
     // 设置正在刷新状态的动画图片
     NSMutableArray *refreshingImages = [NSMutableArray array];
@@ -132,9 +143,25 @@ static const CGFloat MJDuration = 2.0;
         UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"PullToRefresh_%03zd", i]];
         [refreshingImages addObject:image];
     }
-    [self.tableView.gifHeader setImages:refreshingImages forState:MJRefreshHeaderStateRefreshing];
+    [header setImages:refreshingImages forState:MJRefreshHeaderStateRefreshing];
     
     // 在这个例子中，即将刷新时没有动画图片
+    return header;
+}
+
+/**
+ * UITableView + 下拉刷新 隐藏状态和时间01
+ */
+- (void)example04
+{
+    // 添加动画图片的下拉刷新
+    self.tableView.header = [self gifHeader2];
+    
+    // 隐藏时间
+    self.tableView.header.updatedTimeHidden = YES;
+    
+    // 隐藏状态
+    self.tableView.header.stateHidden = YES;
     
     // 马上进入刷新状态
     [self.tableView.header beginRefreshing];
@@ -151,30 +178,13 @@ static const CGFloat MJDuration = 2.0;
 - (void)example05
 {
     // 添加动画图片的下拉刷新
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
-    [self.tableView addGifHeaderWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+    self.tableView.header = [self gifHeader1];
     
     // 隐藏时间
     self.tableView.header.updatedTimeHidden = YES;
     
     // 隐藏状态
     self.tableView.header.stateHidden = YES;
-    
-    // 设置普通状态的动画图片
-    NSMutableArray *idleImages = [NSMutableArray array];
-    for (NSUInteger i = 1; i<=60; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_anim__000%zd", i]];
-        [idleImages addObject:image];
-    }
-    [self.tableView.gifHeader setImages:idleImages forState:MJRefreshHeaderStateIdle];
-    
-    // 设置正在刷新状态的动画图片
-    NSMutableArray *refreshingImages = [NSMutableArray array];
-    for (NSUInteger i = 1; i<=3; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_loading_0%zd", i]];
-        [refreshingImages addObject:image];
-    }
-    [self.tableView.gifHeader setImages:refreshingImages forState:MJRefreshHeaderStateRefreshing];
     
     // 马上进入刷新状态
     [self.tableView.header beginRefreshing];
@@ -188,8 +198,7 @@ static const CGFloat MJDuration = 2.0;
 - (void)example06
 {
     // 添加传统的下拉刷新
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
-    [self.tableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+    self.tableView.header = [self legendHeader];
     
     // 设置文字
     [self.tableView.header setTitle:@"Pull down to refresh" forState:MJRefreshHeaderStateIdle];
@@ -208,27 +217,45 @@ static const CGFloat MJDuration = 2.0;
     // 此时self.tableView.header == self.tableView.legendHeader
 }
 
+- (MJRefreshLegendFooter *)legendFooter
+{
+    __weak typeof(self) weakSelf = self;
+    
+    // 设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
+    MJRefreshLegendFooter *footer = [MJRefreshLegendFooter footerWithRefreshingBlock:^{
+        [weakSelf loadMoreData];
+    }];
+    
+    return footer;
+}
+
 /**
  * UITableView + 上拉刷新 传统
  */
 - (void)example11
 {
-    __weak typeof(self) weakSelf = self;
-    
     // 添加传统的上拉刷新
-    // 设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
-    [self.tableView addLegendFooterWithRefreshingBlock:^{
+    self.tableView.footer = [self legendFooter];
+}
+
+- (MJRefreshGifFooter *)gifFooter1
+{
+    __weak typeof(self) weakSelf = self;
+
+    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadMoreData方法）
+    MJRefreshGifFooter *footer = [MJRefreshGifFooter footerWithRefreshingBlock:^{
         [weakSelf loadMoreData];
     }];
     
-    /**
-     也可以这样使用
-     self.tableView.footer.refreshingBlock = ^{
-     
-     };
-     
-     此时self.tableView.footer == self.tableView.legendFooter
-     */
+    // 设置正在刷新状态的动画图片
+    NSMutableArray *refreshingImages = [NSMutableArray array];
+    for (NSUInteger i = 1; i<=3; i++) {
+        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_loading_0%zd", i]];
+        [refreshingImages addObject:image];
+    }
+    footer.refreshingImages = refreshingImages;
+    
+    return footer;
 }
 
 /**
@@ -237,18 +264,29 @@ static const CGFloat MJDuration = 2.0;
 - (void)example12
 {
     // 添加动画图片的上拉刷新
+    self.tableView.footer = [self gifFooter1];
+    
+    // 此时self.tableView.footer == self.tableView.gifFooter
+}
+
+- (MJRefreshGifFooter *)gifFooter2
+{
+    __weak typeof(self) weakSelf = self;
+    
     // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadMoreData方法）
-    [self.tableView addGifFooterWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+    MJRefreshGifFooter *footer = [MJRefreshGifFooter footerWithRefreshingBlock:^{
+        [weakSelf loadMoreData];
+    }];
     
     // 设置正在刷新状态的动画图片
     NSMutableArray *refreshingImages = [NSMutableArray array];
-    for (NSUInteger i = 1; i<=3; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_loading_0%zd", i]];
+    for (NSUInteger i = 73; i<=140; i++) {
+        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"PullToRefresh_%03zd", i]];
         [refreshingImages addObject:image];
     }
-    self.tableView.gifFooter.refreshingImages = refreshingImages;
+    footer.refreshingImages = refreshingImages;
     
-    // 此时self.tableView.footer == self.tableView.gifFooter
+    return footer;
 }
 
 /**
@@ -258,21 +296,14 @@ static const CGFloat MJDuration = 2.0;
 {
     // 添加动画图片的上拉刷新
     // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadMoreData方法）
-    [self.tableView addGifFooterWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+//    [self.tableView addGifFooterWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+    self.tableView.footer = [self gifFooter2];
     
     // 当上拉刷新控件出现50%时（出现一半），就会自动刷新。这个值默认是1.0（也就是上拉刷新100%出现时，才会自动刷新）
 //    self.tableView.footer.appearencePercentTriggerAutoRefresh = 0.5;
     
     // 隐藏状态
     self.tableView.footer.stateHidden = YES;
-    
-    // 设置正在刷新状态的动画图片
-    NSMutableArray *refreshingImages = [NSMutableArray array];
-    for (NSUInteger i = 73; i<=140; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"PullToRefresh_%03zd", i]];
-        [refreshingImages addObject:image];
-    }
-    self.tableView.gifFooter.refreshingImages = refreshingImages;
     
     // 此时self.tableView.footer == self.tableView.gifFooter
     
@@ -286,19 +317,10 @@ static const CGFloat MJDuration = 2.0;
 - (void)example14
 {
     // 添加动画图片的上拉刷新
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadMoreData方法）
-    [self.tableView addGifFooterWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+    self.tableView.footer = [self gifFooter1];
     
     // 隐藏状态
     self.tableView.footer.stateHidden = YES;
-    
-    // 设置正在刷新状态的动画图片
-    NSMutableArray *refreshingImages = [NSMutableArray array];
-    for (NSUInteger i = 1; i<=3; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"dropdown_loading_0%zd", i]];
-        [refreshingImages addObject:image];
-    }
-    self.tableView.gifFooter.refreshingImages = refreshingImages;
     
     // 此时self.tableView.footer == self.tableView.gifFooter
 }
@@ -310,7 +332,10 @@ static const CGFloat MJDuration = 2.0;
 {
     // 添加传统的上拉刷新
     // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadLastData方法）
-    [self.tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadLastData)];
+    __weak typeof(self) weakSelf = self;
+    self.tableView.footer = [MJRefreshLegendFooter footerWithRefreshingBlock:^{
+        [weakSelf loadLastData];
+    }];
     
     // 其他
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"恢复数据加载" style:UIBarButtonItemStyleDone target:self action:@selector(recover)];
@@ -331,8 +356,7 @@ static const CGFloat MJDuration = 2.0;
 - (void)example16
 {
     // 添加传统的上拉刷新
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadMoreData方法）
-    [self.tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+    self.tableView.footer = [self legendFooter];
     
     // 禁止自动加载
     self.tableView.footer.automaticallyRefresh = NO;
@@ -346,8 +370,7 @@ static const CGFloat MJDuration = 2.0;
 - (void)example17
 {
     // 添加传统的上拉刷新
-    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadMoreData方法）
-    [self.tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+    self.tableView.footer = [self legendFooter];
     
     // 设置文字
     [self.tableView.footer setTitle:@"Click or drag up to refresh" forState:MJRefreshFooterStateIdle];
@@ -368,9 +391,13 @@ static const CGFloat MJDuration = 2.0;
  */
 - (void)example18
 {
+    __weak __typeof(self) weakSelf = self;
+    
     // 添加传统的上拉刷新
     // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadOnceData方法）
-    [self.tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadOnceData)];
+    self.tableView.footer = [MJRefreshLegendFooter footerWithRefreshingBlock:^{
+        [weakSelf loadOnceData];
+    }];
 }
 
 #pragma mark - 数据处理相关

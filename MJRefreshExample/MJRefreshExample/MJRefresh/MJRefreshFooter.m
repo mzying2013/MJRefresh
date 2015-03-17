@@ -27,6 +27,13 @@
 @end
 
 @implementation MJRefreshFooter
++ (instancetype)footerWithRefreshingBlock:(void (^)())block
+{
+    MJRefreshFooter *footer = [[self alloc] init];
+    footer.refreshingBlock = block;
+    return footer;
+}
+
 #pragma mark - 懒加载
 - (NSMutableArray *)willExecuteBlocks
 {
@@ -83,6 +90,8 @@
         [self setTitle:MJRefreshFooterStateIdleText forState:MJRefreshFooterStateIdle];
         [self setTitle:MJRefreshFooterStateRefreshingText forState:MJRefreshFooterStateRefreshing];
         [self setTitle:MJRefreshFooterStateNoMoreDataText forState:MJRefreshFooterStateNoMoreData];
+        
+        self.mj_h = MJRefreshFooterHeight; // Default
     }
     return self;
 }
@@ -100,7 +109,6 @@
         [newSuperview addObserver:self forKeyPath:MJRefreshContentSize options:NSKeyValueObservingOptionNew context:nil];
         [newSuperview addObserver:self forKeyPath:MJRefreshPanState options:NSKeyValueObservingOptionNew context:nil];
         
-        self.mj_h = MJRefreshFooterHeight;
         _scrollView.mj_insetB += self.mj_h;
         
         // 重新调整frame
