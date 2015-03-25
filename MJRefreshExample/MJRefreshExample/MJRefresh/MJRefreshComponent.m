@@ -25,11 +25,12 @@
     if (self = [super initWithFrame:frame]) {
         // 基本属性
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        self.backgroundColor = [UIColor clearColor];
+        
         
         // 默认文字颜色和字体大小
         self.textColor = MJRefreshLabelTextColor;
         self.font = MJRefreshLabelFont;
+        
     }
     return self;
 }

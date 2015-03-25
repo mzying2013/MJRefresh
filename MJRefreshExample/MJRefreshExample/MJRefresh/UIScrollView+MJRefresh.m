@@ -51,6 +51,15 @@
     return header;
 }
 
+
+-(MJRefreshGifHeader*)addImageHeaderWithRefreshingBlock:(void (^)())block{
+    MJRefreshGifHeader *header = [self addGifHeader];
+    header.refreshingBlock = block;
+    return header;
+}
+
+
+
 - (MJRefreshGifHeader *)addGifHeaderWithRefreshingBlock:(void (^)())block dateKey:(NSString *)dateKey
 {
     MJRefreshGifHeader *header = [self addGifHeader];

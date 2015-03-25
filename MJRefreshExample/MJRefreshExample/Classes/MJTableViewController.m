@@ -13,7 +13,7 @@
 #import "UIViewController+Example.h"
 #import "MJRefresh.h"
 
-static const CGFloat MJDuration = 2.0;
+static const CGFloat MJDuration = 0.5;
 /**
  * 随机数据
  */
@@ -368,7 +368,12 @@ static const CGFloat MJDuration = 2.0;
 - (void)loadMoreData
 {
     // 1.添加假数据
-    for (int i = 0; i<5; i++) {
+    NSMutableArray *indexPathMutableArray = [NSMutableArray array];
+    for (int i = 0; i<10; i++) {
+        NSLog(@"..............%lu",(unsigned long)[self.data count]);
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.data count] inSection:0];
+        [indexPathMutableArray addObject:indexPath];
+        
         [self.data addObject:MJRandomData];
     }
     
@@ -376,6 +381,10 @@ static const CGFloat MJDuration = 2.0;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MJDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         // 刷新表格
         [self.tableView reloadData];
+        /*
+        [self.tableView insertRowsAtIndexPaths:[indexPathMutableArray copy]
+                              withRowAnimation:UITableViewRowAnimationNone];
+        */
         
         // 拿到当前的上拉刷新控件，结束刷新状态
         [self.tableView.footer endRefreshing];
@@ -433,6 +442,8 @@ static const CGFloat MJDuration = 2.0;
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self performSelector:NSSelectorFromString(self.method) withObject:nil];
+    
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -449,6 +460,7 @@ static const CGFloat MJDuration = 2.0;
     }
     
     cell.textLabel.text = self.data[indexPath.row];;
+    cell.backgroundColor = [UIColor grayColor];
     
     return cell;
 }

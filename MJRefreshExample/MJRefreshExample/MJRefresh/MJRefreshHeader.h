@@ -18,7 +18,9 @@ typedef enum {
     /** 正在刷新中的状态 */
     MJRefreshHeaderStateRefreshing,
     /** 即将刷新的状态 */
-    MJRefreshHeaderStateWillRefresh
+    MJRefreshHeaderStateWillRefresh,
+    //固定即将刷新状态
+    MJRefreshHeaderStatePillupWillRefresh
 } MJRefreshHeaderState;
 
 @interface MJRefreshHeader : MJRefreshComponent

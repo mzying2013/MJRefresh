@@ -51,6 +51,18 @@
  * @param dateKey   用来记录刷新时间的key
  */
 - (MJRefreshLegendHeader *)addLegendHeaderWithRefreshingTarget:(id)target refreshingAction:(SEL)action dateKey:(NSString *)dateKey;
+
+
+/**
+ *  添加静态图片的下拉刷新控件
+ *
+ *  @param block 进入刷新状态就会自动调用这个block
+ *
+ *  @return 下拉刷新控件
+ */
+-(MJRefreshGifHeader*)addImageHeaderWithRefreshingBlock:(void (^)())block;
+
+
 /**
  * 添加一个gif图片的下拉刷新控件
  *
