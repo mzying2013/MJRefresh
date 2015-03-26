@@ -62,10 +62,6 @@
         // 设置默认的dateKey
         self.dateKey = MJRefreshHeaderUpdatedTimeKey;
         
-        //背景色
-        UIColor *bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"cloud"]];
-        self.backgroundColor = bgColor;
-        
         // 设置为默认状态
         self.state = MJRefreshHeaderStateIdle;
         
@@ -83,6 +79,26 @@
     
     if (newSuperview) {
         self.mj_h = MJRefreshHeaderHeight;
+        
+        //Layer
+        UIColor *bgColor = [UIColor colorWithRed:186/255.0
+                                           green:211/255.0
+                                            blue:240/255.0
+                                           alpha:1.0];
+        CALayer *bgLayer = [CALayer layer];
+        CGRect layerFrame = self.bounds;
+        layerFrame.origin.y = -newSuperview.bounds.size.height + self.mj_h;
+        layerFrame.size.height = newSuperview.bounds.size.height;
+        bgLayer.frame = layerFrame;
+        bgLayer.backgroundColor = bgColor.CGColor;
+        [self.layer insertSublayer:bgLayer atIndex:0];
+        
+        
+        
+        CALayer *couldLayer = [CALayer layer];
+        couldLayer.frame = self.bounds;
+        couldLayer.contents = (id)[UIImage imageNamed:@"refresh_cloud"].CGImage;
+        [self.layer addSublayer:couldLayer];
     }
 }
 
@@ -104,7 +120,9 @@
     if (self.stateHidden && self.updatedTimeHidden) return;
     
     if (self.updatedTimeHidden) { // 显示状态
-        _stateLabel.frame = self.bounds;
+        CGRect bounds = self.bounds;
+        bounds.origin.y += self.mj_h * 0.4;
+        _stateLabel.frame = bounds;
     } else if (self.stateHidden) { // 显示时间
         self.updatedTimeLabel.frame = self.bounds;
     } else { // 都显示
@@ -119,6 +137,9 @@
         CGFloat updatedTimeW = stateW;
         self.updatedTimeLabel.frame = CGRectMake(0, updatedTimeY, updatedTimeW, updatedTimeH);
     }
+    
+    
+    NSLog(@"layout subviews..............");
 }
 
 #pragma mark - 私有方法
@@ -199,71 +220,23 @@
     
     // 普通 和 即将刷新 的临界点
     CGFloat normal2pullingOffsetY = happenOffsetY - self.mj_h;
-    NSLog(@"y:%f normal:%f state:%u",_scrollView.mj_offsetY,normal2pullingOffsetY,self.state);
-    
-    self.pullingPercent = (happenOffsetY - offsetY) / self.mj_h;
-    
-    if (_scrollView.contentOffset.y < normal2pullingOffsetY) {
-        NSLog(@"固定..........");
-        _scrollView.mj_offsetY = normal2pullingOffsetY;
-        
-        
-        if (!_scrollView.isDragging) {
-            self.pullingPercent = 1.0;
-            // 开始刷新
-            self.state = MJRefreshHeaderStateRefreshing;
-            NSLog(@"开始刷新 y:%f",_scrollView.mj_offsetY);
-        }
-    }
-    
-    
-    
-    
-    
-    
-    /*
     if (_scrollView.isDragging) {
         self.pullingPercent = (happenOffsetY - offsetY) / self.mj_h;
-        
         
         if (self.state == MJRefreshHeaderStateIdle && offsetY < normal2pullingOffsetY) {
             // 转为即将刷新状态
             self.state = MJRefreshHeaderStatePulling;
-            
-            NSLog(@"即将刷新:%f",_scrollView.mj_offsetY);
-            
-        }else if((self.state == MJRefreshHeaderStatePulling || self.state == MJRefreshHeaderStatePillupWillRefresh) && offsetY < normal2pullingOffsetY){
-            //固定下拉
-            [_scrollView setContentOffset:CGPointMake(0.f, normal2pullingOffsetY)];
-            self.state = MJRefreshHeaderStatePillupWillRefresh;
-            NSLog(@"固定刷新");
-            
-        }else if (offsetY > normal2pullingOffsetY) {
+        } else if (self.state == MJRefreshHeaderStatePulling && offsetY >= normal2pullingOffsetY) {
             // 转为普通状态
             self.state = MJRefreshHeaderStateIdle;
-            NSLog(@"普通状态: %f",_scrollView.mj_offsetY);
-            
         }
-        
-    } else if (self.state == MJRefreshHeaderStatePillupWillRefresh) {// 即将刷新 && 手松开
+    } else if (self.state == MJRefreshHeaderStatePulling) {// 即将刷新 && 手松开
         self.pullingPercent = 1.0;
         // 开始刷新
-        
         self.state = MJRefreshHeaderStateRefreshing;
-        NSLog(@"开始刷新 y:%f",_scrollView.mj_offsetY);
-        
-        
     } else {
         self.pullingPercent = (happenOffsetY - offsetY) / self.mj_h;
-        
-        if (offsetY < normal2pullingOffsetY) {
-            //固定下拉
-            [_scrollView setContentOffset:CGPointMake(0.f, normal2pullingOffsetY)];
-            
-            NSLog(@"........................");
-        }
     }
-     */
 }
 
 #pragma mark - 公共方法
@@ -318,14 +291,7 @@
                 
                 // 恢复inset和offset
                 [UIView animateWithDuration:MJRefreshSlowAnimationDuration delay:0.0 options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState animations:^{
-//                    _scrollView.mj_insetT -= self.mj_h;
-                    if (_scrollViewOriginalInset.top == 0) {
-                        _scrollView.mj_insetT = 0;
-                    } else if (_scrollViewOriginalInset.top ==_scrollView.mj_insetT) {
-                        _scrollView.mj_insetT -= self.mj_h;
-                    } else {
-                        _scrollView.mj_insetT = _scrollViewOriginalInset.top;
-                    }
+                    _scrollView.mj_insetT -= self.mj_h;
                 } completion:nil];
             }
             break;
@@ -339,8 +305,6 @@
                 
                 // 设置滚动位置
                 _scrollView.mj_offsetY = - top;
-                NSLog(@"...........");
-                
             } completion:^(BOOL finished) {
                 // 回调
                 if (self.refreshingBlock) {

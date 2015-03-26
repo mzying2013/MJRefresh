@@ -47,8 +47,12 @@
     if (self.stateHidden && self.updatedTimeHidden) {
         self.gifView.contentMode = UIViewContentModeCenter;
     } else {
+        //不隐藏状态
+        /*
         self.gifView.contentMode = UIViewContentModeRight;
         self.gifView.mj_w = self.mj_w * 0.5 - 90;
+         */
+        self.gifView.contentMode = UIViewContentModeTop;
     }
 }
 

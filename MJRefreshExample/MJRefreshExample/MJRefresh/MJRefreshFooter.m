@@ -61,6 +61,7 @@
 - (UILabel *)stateLabel
 {
     if (!_stateLabel) {
+        
         UILabel *stateLabel = [[UILabel alloc] init];
         stateLabel.backgroundColor = [UIColor clearColor];
         stateLabel.textAlignment = NSTextAlignmentCenter;
@@ -72,6 +73,9 @@
 #pragma mark - 初始化方法
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        //背景色
+        self.backgroundColor = [UIColor clearColor];
+        
         // 默认底部控件100%出现时才会自动刷新
         self.appearencePercentTriggerAutoRefresh = 1.0;
         

@@ -330,16 +330,22 @@ static const CGFloat MJDuration = 0.5;
     // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadMoreData方法）
     [self.tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
     
-    // 设置文字
-    [self.tableView.footer setTitle:@"Click or drag up to refresh" forState:MJRefreshFooterStateIdle];
-    [self.tableView.footer setTitle:@"Loading more ..." forState:MJRefreshFooterStateRefreshing];
-    [self.tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
     
+    self.tableView.footer.stateHidden = YES;
+    
+    
+    // 设置文字
+    [self.tableView.footer setTitle:@"" forState:MJRefreshFooterStateIdle];
+    [self.tableView.footer setTitle:@"" forState:MJRefreshFooterStateRefreshing];
+    [self.tableView.footer setTitle:@"" forState:MJRefreshFooterStateNoMoreData];
+    
+    /*
     // 设置字体
     self.tableView.footer.font = [UIFont systemFontOfSize:17];
     
     // 设置颜色
     self.tableView.footer.textColor = [UIColor blueColor];
+     */
     
     // 此时self.tableView.footer == self.tableView.legendFooter
 }
@@ -374,14 +380,18 @@ static const CGFloat MJDuration = 0.5;
 #pragma mark 上拉加载更多数据
 - (void)loadMoreData
 {
+    NSLog(@"loadMoreData~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     // 1.添加假数据
     NSMutableArray *indexPathMutableArray = [NSMutableArray array];
     for (int i = 0; i<10; i++) {
         NSLog(@"..............%lu",(unsigned long)[self.data count]);
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.data count] inSection:0];
-        [indexPathMutableArray addObject:indexPath];
         
-        [self.data addObject:MJRandomData];
+        if ([self.data count] < 40) {
+            [self.data addObject:MJRandomData];
+        }else{
+            [self.tableView.footer noticeNoMoreData];
+        }
     }
     
     // 2.模拟2秒后刷新表格UI（真实开发中，可以移除这段gcd代码）
@@ -450,7 +460,7 @@ static const CGFloat MJDuration = 0.5;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self performSelector:NSSelectorFromString(self.method) withObject:nil];
     
-    
+    [self loadNewData];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
