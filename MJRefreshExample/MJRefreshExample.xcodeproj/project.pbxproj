@@ -12,7 +12,7 @@
 		2D4A99AB1AB178EB00828496 /* UIViewController+Example.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D4A99AA1AB178EB00828496 /* UIViewController+Example.m */; };
 		2DA7F92B1AA6B4C4005627AB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA7F92A1AA6B4C4005627AB /* main.m */; };
 		2DA7F9341AA6B4C4005627AB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7F9321AA6B4C4005627AB /* Main.storyboard */; };
-		2DA7F9361AA6B4C4005627AB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7F9351AA6B4C4005627AB /* Images.xcassets */; };
+		2DA7F9361AA6B4C4005627AB /* lion.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7F9351AA6B4C4005627AB /* lion.xcassets */; };
 		2DA7F9391AA6B4C4005627AB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7F9371AA6B4C4005627AB /* LaunchScreen.xib */; };
 		2DA7F9451AA6B4C4005627AB /* MJRefreshExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA7F9441AA6B4C4005627AB /* MJRefreshExampleTests.m */; };
 		2DA7F9541AA6B51C005627AB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA7F9501AA6B51C005627AB /* AppDelegate.m */; };
@@ -57,7 +57,7 @@
 		2DA7F9291AA6B4C4005627AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2DA7F92A1AA6B4C4005627AB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2DA7F9331AA6B4C4005627AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		2DA7F9351AA6B4C4005627AB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		2DA7F9351AA6B4C4005627AB /* lion.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = lion.xcassets; sourceTree = "<group>"; };
 		2DA7F9381AA6B4C4005627AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		2DA7F93E1AA6B4C4005627AB /* MJRefreshExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MJRefreshExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DA7F9431AA6B4C4005627AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -153,7 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				2DA7F9321AA6B4C4005627AB /* Main.storyboard */,
-				2DA7F9351AA6B4C4005627AB /* Images.xcassets */,
+				2DA7F9351AA6B4C4005627AB /* lion.xcassets */,
 				2DA7F9371AA6B4C4005627AB /* LaunchScreen.xib */,
 				2DA7F9291AA6B4C4005627AB /* Info.plist */,
 				2DA7F92A1AA6B4C4005627AB /* main.m */,
@@ -322,7 +322,7 @@
 				2DA7F9391AA6B4C4005627AB /* LaunchScreen.xib in Resources */,
 				2DA7F96F1AA75076005627AB /* MJRefresh.bundle in Resources */,
 				2DF7EA111AA8C3DA008580B4 /* MJTestViewController.xib in Resources */,
-				2DA7F9361AA6B4C4005627AB /* Images.xcassets in Resources */,
+				2DA7F9361AA6B4C4005627AB /* lion.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
